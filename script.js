@@ -1,7 +1,7 @@
 const MEASUREMENT_TYPES = [
-    '/RT', '/DOC', '/WM', '/CTR 20\'', '/CTR 40\'', '/TRIP', '/SHIPMENT', 
-    '/KG', '/M3', '/TON', '/CBM', '/PALLET', '/BOX', '/ITEM', '/DAY', 
-    '/HOUR', '/KM', '/MILE', '/LITER', '/GALLON', '/SQM', '/CASE', 
+    '/RT', '/DOC', '/WM', '/CTR 20\'', '/CTR 40\'', '/TRIP', '/SHIPMENT',
+    '/KG', '/M3', '/TON', '/CBM', '/PALLET', '/BOX', '/ITEM', '/DAY',
+    '/HOUR', '/KM', '/MILE', '/LITER', '/GALLON', '/SQM', '/CASE',
     '/DRUM', '/BAG', '/ROLL', '/UNIT', '/SET', '/DOZEN'
 ];
 
@@ -31,8 +31,11 @@ function openOCRProcessor() {
 }
 
 function clearInput() {
-    document.getElementById('rawInput').value = '';
-    showSuccess('Input cleared!');
+    const rawInputElement = document.getElementById('rawInput');
+    if (rawInputElement) {
+        rawInputElement.value = '';
+        showSuccess('Input cleared!');
+    }
 }
 
 function loadSavedData() {
@@ -94,17 +97,21 @@ function showSuccess(message) {
 
 window.addEventListener('message', function(event) {
     if (event.data.type === 'OCR_RESULT') {
-        document.getElementById('rawInput').value = event.data.text;
-        showSuccess('OCR text successfully imported!');
+        const rawInputElement = document.getElementById('rawInput');
+        if (rawInputElement) {
+            rawInputElement.value = event.data.text;
+            showSuccess('OCR text successfully imported!');
+        }
     }
 });
 
 async function parseWithAI() {
-    const rawInput = document.getElementById('rawInput').value.trim();
-    if (!rawInput) {
+    const rawInputElement = document.getElementById('rawInput');
+    if (!rawInputElement || !rawInputElement.value.trim()) {
         showError('Please paste data from email first!');
         return;
     }
+    const rawInput = rawInputElement.value.trim();
 
     const loadingElement = document.getElementById('loading');
     const aiButton = document.querySelector('.btn-primary');
@@ -188,7 +195,8 @@ function addRowToTable(data = {}) {
     }
 
     if (data.cost) {
-        calculateRow(row.cells[2].querySelector('input'));
+        const costInput = row.cells[2]?.querySelector('input');
+        if (costInput) calculateRow(costInput);
     }
 
     updateRowStatus(row);
@@ -207,10 +215,12 @@ function escapeHtml(unsafe) {
 
 function calculateRow(input) {
     const row = input.closest('tr');
-    const amountInput = row.cells[1].querySelector('input');
-    const costInput = row.cells[2].querySelector('input');
-    const totalSpan = row.cells[4].querySelector('.total-amount');
+    const amountInput = row.cells[1]?.querySelector('input');
+    const costInput = row.cells[2]?.querySelector('input');
+    const totalSpan = row.cells[4]?.querySelector('.total-amount');
     
+    if (!amountInput || !costInput || !totalSpan) return;
+
     const amount = parseFloat(amountInput.value) || 1;
     const costString = costInput.value;
     const cost = parseFloat(costString.replace(/[^0-9.-]+/g,"")) || 0;
@@ -230,17 +240,19 @@ function updateRow(input) {
 }
 
 function updateRowStatus(row) {
-    const statusBadge = row.cells[7].querySelector('.status-badge');
-    const item = row.cells[0].querySelector('input').value;
-    const cost = row.cells[2].querySelector('input').value;
-    const measurement = row.cells[3].querySelector('input').value;
+    const statusBadge = row.cells[7]?.querySelector('.status-badge');
+    const item = row.cells[0]?.querySelector('input')?.value;
+    const cost = row.cells[2]?.querySelector('input')?.value;
+    const measurement = row.cells[3]?.querySelector('input')?.value;
     
-    if (item && cost && measurement) {
-        statusBadge.className = 'status-badge status-valid';
-        statusBadge.textContent = 'VALID';
-    } else {
-        statusBadge.className = 'status-badge status-invalid';
-        statusBadge.textContent = 'INCOMPLETE';
+    if (statusBadge) {
+        if (item && cost && measurement) {
+            statusBadge.className = 'status-badge status-valid';
+            statusBadge.textContent = 'VALID';
+        } else {
+            statusBadge.className = 'status-badge status-invalid';
+            statusBadge.textContent = 'INCOMPLETE';
+        }
     }
 }
 
@@ -312,7 +324,8 @@ function clearTable() {
 function clearAll() {
     if (confirm('Clear all data from table and input?')) {
         clearTable();
-        document.getElementById('rawInput').value = '';
+        const rawInputElement = document.getElementById('rawInput');
+        if (rawInputElement) rawInputElement.value = '';
         localStorage.removeItem('shipmentData');
         showSuccess('All data cleared!');
     }
