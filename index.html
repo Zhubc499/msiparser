@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSI Shipment Cost Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚢 MSI Shipment Cost Calculator</h1>
+            <p>AI-Powered Parsing & Automatic Calculation by PT. Milenial Solusi Internusa</p>
+        </div>
+
+        <div class="content">
+            <div class="input-section">
+                <h3>📧 Paste Email Data Here</h3>
+                <div class="input-options">
+                    <button id="ocrButton" class="btn btn-secondary">
+                        📷 OCR dari Gambar
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearInput()">
+                        🗑️ Clear Input
+                    </button>
+                </div>
+                
+                <textarea id="rawInput" placeholder="Contoh:
+Ocean Freight: USD 150 /CTR 20'
+Documentation: USD 25 /DOC
+Trucking: IDR 2,000,000 /TRIP
+Warehouse: USD 50 /WM
+Insurance: 0.5% of cargo value /ITEM
+Customs Clearance: USD 100 /SHIPMENT
+
+Vendor: ABC Shipping Co."></textarea>
+                
+                <div class="measurement-types">
+                    <h4>📏 Supported Measurement Types:</h4>
+                    <div class="measurement-tags" id="measurementTags"></div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="parseWithAI()">
+                        <span>🤖 Parse with AI</span>
+                    </button>
+                    <button class="btn btn-success" onclick="addNewRow()">
+                        <span>➕ Add Manual Row</span>
+                    </button>
+                    <button class="btn btn-warning" onclick="clearAll()">
+                        <span>🗑️ Clear All</span>
+                    </button>
+                    <button class="btn btn-danger" onclick="exportToExcel()">
+                        <span>📊 Export to Excel</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Processing with AI...</p>
+            </div>
+
+            <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+            <div class="table-container">
+                <table id="costingTable">
+                    <thead>
+                        <tr>
+                            <th>ITEM</th>
+                            <th>AMOUNT</th>
+                            <th>COST</th>
+                            <th>MEASUREMENT</th>
+                            <th>TOTAL</th>
+                            <th>VENDOR/AGENT</th>
+                            <th>NOTES</th>
+                            <th>STATUS</th>
+                            <th>ACTION</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        </tbody>
+                </table>
+            </div>
+
+            <div class="footer">
+                <p>Shipment Cost Calculator v2.0 | Powered by Denyt Zhu | MSI Operations</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

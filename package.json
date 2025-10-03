@@ -1,0 +1,7 @@
+{
+  "name": "netlify-functions-server",
+  "version": "1.0.0",
+  "dependencies": {
+    "@huggingface/inference": "^2.6.4"
+  }
+}
