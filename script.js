@@ -116,7 +116,8 @@ async function parseWithAI() {
         if (span) span.textContent = '🤖 Processing...';
     }
 
-    const functionUrl = '/.netlify/functions/parse-ai'; 
+    // URL diubah ke path Vercel
+    const functionUrl = '/api/parse-ai'; 
 
     try {
         const response = await fetch(functionUrl, {
